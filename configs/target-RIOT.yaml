@@ -1,0 +1,17 @@
+project_root: /home/dananday/Research/RIOT
+
+# relative to project_root 
+proof_root: cbmc/codex_tests
+
+# where Makefile.include is found (relative)
+makefile_include_dir: cbmc
+
+# Examples are optional, controlled by a flag. Provide absolute path
+examples_dir: /home/dananday/Research/RIOT/cbmc/codex_tests/examples
+
+targets:
+  - function: _receive
+    file_path: sys/net/gnrc/transport_layer/tcp/gnrc_tcp_eventloop.c
+
+  - function: event_timeout_set
+    file_path: sys/ztimer/event_timeout.c
