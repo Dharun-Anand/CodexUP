@@ -20,40 +20,19 @@ You should create the proof harness and makefile within this directory, such tha
 You can find examples of completed harnesses and makefiles in the following proof directories: {EXAMPLES_DIR}
 Ensure you study the format of the Makefile and the included Makefile.include so you can understand how to create a valid Makefile.
 
-[Task Procedure]
-Your goal is to create a proof harness that compiles and achieves the maximum possible coverage.
-The proof harness compiles if it does not produce any error when “make” is executed.
-You MUST execute verification and iterate until completion.
-
-You must perform the following loop:
-1) Execute `make clean && make` inside the proof directory: {PROOF_DIR}
-   - If any compilation or linking error occurs:
-     - inspect the standard output
-     - record your observation in 'thoughts.log'
-     - modify ONLY the harness / Makefile / stubs
-     - re-run `make clean && make` until it succeeds.
-2) After `make` succeeds, execute `make report`.
-3) Inspect CBMC verification report: {PROOF_DIR}/build/reports/cbmc.xml
-4) If CBMC reports verification failures:
-   - record your observation in 'thoughts.log'
-   - locate the failing property and counterexample
-   - add the weakest reasonable assumptions or stubs required
-   - re-run `make clean && make` and `make report`.
-5) Inspect CBMC coverage report: {PROOF_DIR}/build/report/json/viewer-coverage.json
-6) If the coverage report reports uncovered lines that exist in the target file:
-   - record your observation in 'thoughts.log'
-   - refine nondeterministic inputs or assumptions to reach feasible paths
-   - do NOT reduce coverage by over-constraining inputs.
-7) Repeat steps (1)–(6) until:
-   - `make` executes without errors, AND
-   - CBMC reports no verification failures, AND
-   - coverage does not improve for two consecutive iterations
-     (or after 10 total iterations).
-
-The proof is considered complete ONLY after this loop terminates. Then your task is completed.
-
 [Important Notes]
-1) Documentation: Observe context, think out loud, plan next steps, and then make actions for every step. Document your observations, thoughts, plans, and actions at every step in 'thoughts.log'. Write this file at: {LOG_DIR}/thoughts.log
+1) Documentation: Observe context, think out loud, plan next steps, and then make actions for every step. Document your observations, thoughts, plans, and actions at every step at {LOG_DIR}/thoughts_{FUNCTION_NAME}.log
 2) Use coverage report: Ensure that you use CBMCs coverage report to help improve coverage.
 3) Stubs: Do not stub functions unless the build/CBMC output explicitly reports them as missing/undefined. When stubbing: preserve signature, keep minimal behavior, and document each stub in the log with the error that required it.
 4) diff --git: Do not execute 'diff --git' more than once per iteration.
+
+[Build and Result Information]
+It should be possible to execute the harness and the verification using the “make” command.
+The results of the make’s command will be in the 'build' subdirectory of the proof directory.
+Specifically, it will contain a build/reports subdirectory with the logs, and a build/report subdirectory with the final html and json reports.
+You can see the compilation logs in standard output and the verification logs in {PROOF_DIR}/build/reports/cbmc.xml
+After the coverage report will be located at {PROOF_DIR}/build/report/json/viewer-coverage.json
+
+[Completeness Criteria]
+Your goal is to create a proof harness that compiles and achieves the maximum possible coverage.
+The proof harness compiles if it does not produce any error when “make” is executed.

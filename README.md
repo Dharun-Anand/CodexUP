@@ -5,6 +5,8 @@ General Code Agent for Automated Unit Proof Generation
 
 ```bash
 pip install -r requirements.txt
+export OPENAI_API_KEY="your_api_key_here"
+# Ensure the codex CLI is installed and on your PATH
 python /home/dananday/Research/CodexUP/src/codexup.py \
   --config /home/dananday/Research/CodexUP/configs/target-RIOT.yaml \
   --prompt /home/dananday/Research/CodexUP/prompts/prompt.txt \

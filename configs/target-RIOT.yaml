@@ -1,17 +1,20 @@
 project_root: /home/dananday/Research/RIOT
 
 # relative to project_root 
-proof_root: cbmc/codex_tests
+proof_root: cbmc/CodexUP_TestParallel
 
 # where Makefile.include is found (relative)
 makefile_include_dir: cbmc
 
 # Examples are optional, controlled by a flag. Provide absolute path
-examples_dir: /home/dananday/Research/RIOT/cbmc/codex_tests/examples
+examples_dir: /home/dananday/Research/RIOT/cbmc/examples
 
 targets:
   - function: _receive
     file_path: sys/net/gnrc/transport_layer/tcp/gnrc_tcp_eventloop.c
 
-  - function: event_timeout_set
-    file_path: sys/ztimer/event_timeout.c
+  - function: gnrc_pktbuf_add
+    file_path: sys/net/gnrc/pktbuf_static/gnrc_pktbuf_static.c
+
+  - function: auto_init_gnrc_ipv6_static_addr
+    file_path: sys/net/gnrc/network_layer/ipv6/static_addr/gnrc_ipv6_static_addr.c
