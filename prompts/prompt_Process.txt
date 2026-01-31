@@ -40,7 +40,7 @@ You must perform the following loop:
    - add the weakest reasonable assumptions or stubs required
    - re-run `make clean && make` and `make report`.
 5) Inspect CBMC coverage report: {PROOF_DIR}/build/report/json/viewer-coverage.json
-6) If the coverage report reports uncovered lines that exist in the target file:
+6) If the coverage report reports uncovered lines:
    - record your observation in 'thoughts.log'
    - refine nondeterministic inputs or assumptions to reach feasible paths
    - do NOT reduce coverage by over-constraining inputs.

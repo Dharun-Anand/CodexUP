@@ -1,7 +1,7 @@
 project_root: /home/dananday/Research/RIOT
 
 # relative to project_root 
-proof_root: cbmc/CodexUP_TestParallel
+proof_root: cbmc/CodexUP_TestParallelFinal
 
 # where Makefile.include is found (relative)
 makefile_include_dir: cbmc
