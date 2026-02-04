@@ -1,0 +1,27 @@
+project_root: /home/dananday/Research/contiki-ng
+
+# relative to project_root 
+proof_root: cbmc/CodexUP_Contiki_BaseIdeology
+
+# where Makefile.include is found (Provide absolute path)
+makefile_include_dir: /home/dananday/Research/CodexUP/templates
+
+# Examples are optional, controlled by a flag (Provide absolute path)
+examples_dir: /home/dananday/Research/CodexUP/templates/examples
+
+# relative to project_root
+targets:
+  - function: read_frame
+    file_path: arch/cpu/nrf/net/nrf-ieee-driver-arch.c
+
+  - function: dao_input_storing
+    file_path: os/net/routing/rpl-classic/rpl-icmp6.c
+
+  - function: storage_get_index
+    file_path: os/storage/antelope/storage-cfs.c
+
+  - function: input_l2cap_credit
+    file_path: os/net/mac/ble/ble-l2cap.c
+
+  - function: uipbuf_get_next_header
+    file_path: os/net/ipv6/uipbuf.c

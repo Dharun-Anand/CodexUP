@@ -1,20 +1,72 @@
 project_root: /home/dananday/Research/RIOT
 
 # relative to project_root 
-proof_root: cbmc/CodexUP_TestParallelFinal
+proof_root: cbmc/CodexUP_RIOT_2
 
-# where Makefile.include is found (relative)
-makefile_include_dir: cbmc
+# where Makefile.include is found (Provide absolute path)
+makefile_include_dir: /home/dananday/Research/CodexUP/templates
 
-# Examples are optional, controlled by a flag. Provide absolute path
-examples_dir: /home/dananday/Research/RIOT/cbmc/examples
+# Examples are optional, controlled by a flag (Provide absolute path)
+examples_dir: /home/dananday/Research/CodexUP/templates/examples
 
+# relative to project_root
 targets:
+  - function: dns_msg_parse_reply
+    file_path: sys/net/application_layer/dns/msg.c
+
   - function: _receive
     file_path: sys/net/gnrc/transport_layer/tcp/gnrc_tcp_eventloop.c
 
-  - function: gnrc_pktbuf_add
-    file_path: sys/net/gnrc/pktbuf_static/gnrc_pktbuf_static.c
+  - function: _on_regack
+    file_path: sys/net/application_layer/asymcute/asymcute.c
 
-  - function: auto_init_gnrc_ipv6_static_addr
-    file_path: sys/net/gnrc/network_layer/ipv6/static_addr/gnrc_ipv6_static_addr.c
+  - function: base64_encode_base
+    file_path: sys/base64/base64.c
+
+  - function: gnrc_rpl_recv_DAO
+    file_path: sys/net/gnrc/routing/rpl/gnrc_rpl_control_messages.c
+
+  - function: gnrc_rpl_validation_options
+    file_path: sys/net/gnrc/routing/rpl/gnrc_rpl_validation.c
+
+  - function: _parse_options
+    file_path: sys/net/gnrc/routing/rpl/gnrc_rpl_control_messages.c
+
+  - function: clif_decode_link
+    file_path: sys/clif/clif.c
+
+  - function: clif_get_attr
+    file_path: sys/clif/clif.c
+
+  - function: uri_parser_process
+    file_path: sys/uri_parser/uri_parser.c
+
+  - function: gnrc_rpl_srh_process
+    file_path: sys/net/gnrc/routing/rpl/srh/gnrc_rpl_srh.c
+
+  - function: gnrc_sixlowpan_iphc_recv
+    file_path: sys/net/gnrc/network_layer/sixlowpan/iphc/gnrc_sixlowpan_iphc.c
+
+  - function: _rbuf_add
+    file_path: sys/net/gnrc/network_layer/sixlowpan/frag/rb/gnrc_sixlowpan_frag_rb.c
+
+  - function: _iphc_encode
+    file_path: sys/net/gnrc/network_layer/sixlowpan/iphc/gnrc_sixlowpan_iphc.c
+
+  - function: gnrc_sixlowpan_frag_sfr_send
+    file_path: sys/net/gnrc/network_layer/sixlowpan/frag/sfr/gnrc_sixlowpan_frag_sfr.c
+
+  - function: _iphc_ipv6_encode
+    file_path: sys/net/gnrc/network_layer/sixlowpan/iphc/gnrc_sixlowpan_iphc.c
+
+  - function: _on_rd_init
+    file_path: sys/net/application_layer/cord/lc/cord_lc.c
+
+  - function: gcoap_dns_server_proxy_get
+    file_path: sys/net/application_layer/gcoap/dns.c
+
+  - function: _gcoap_forward_proxy_copy_options
+    file_path: sys/net/application_layer/gcoap/forward_proxy.c
+
+  - function: _parse_advertise
+    file_path: sys/net/application_layer/dhcpv6/client.c

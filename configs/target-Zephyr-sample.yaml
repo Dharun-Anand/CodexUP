@@ -1,0 +1,27 @@
+project_root: /home/dananday/Research/zephyr
+
+# relative to project_root 
+proof_root: cbmc/CodexUP_Zephyr_BaseIdeology
+
+# where Makefile.include is found (Provide absolute path)
+makefile_include_dir: /home/dananday/Research/CodexUP/templates
+
+# Examples are optional, controlled by a flag (Provide absolute path)
+examples_dir: /home/dananday/Research/CodexUP/templates/examples
+
+# relative to project_root
+targets:
+  - function: cmd_write
+    file_path: subsys/settings/src/settings_shell.c
+
+  - function: usb_dc_ep_write
+    file_path: drivers/usb/device/usb_dc_native_posix.c
+
+  - function: eswifi_mgmt_iface_status
+    file_path: drivers/wifi/eswifi/eswifi_core.c
+
+  - function: bt_buf_get_tx
+    file_path: subsys/bluetooth/host/hci_raw.c
+
+  - function: gatt_find_info_rsp
+    file_path: subsys/bluetooth/host/gatt.c

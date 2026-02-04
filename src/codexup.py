@@ -18,6 +18,8 @@ try:
 except Exception:
     yaml = None
 
+from metrics_summary import summarize_metrics
+
 
 def _fail(msg: str) -> None:
     """Print an error message and exit."""
@@ -81,7 +83,7 @@ def run_codex(
     cwd: str,
     model: Optional[str],
     extra_args: Optional[list[str]],
-) -> int:
+) -> tuple[int, float]:
     """Run codex with the rendered prompt and write stdout/stderr to a log file."""
     cmd = ["codex", "exec", "--full-auto"]
     if model:
@@ -89,27 +91,61 @@ def run_codex(
     if extra_args:
         cmd += extra_args
     cmd.append(prompt)
+
     if dry_run:
         print("[codexup] dry-run:", " ".join(cmd))
         print(f"[codexup] log: {log_path}")
         print(f"[codexup] cwd: {cwd}")
-        return 0
+        return 0, 0.0
 
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
-    with open(log_path, "w", encoding="utf-8") as log_file:
-        process = subprocess.Popen(
-            cmd,
-            cwd=cwd,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            text=True,
+    attempt = 0
+    while True:
+        attempt += 1
+        log_path_obj = Path(log_path)
+        attempt_log_path = log_path_obj.with_name(
+            f"{log_path_obj.stem}_attempt{attempt}{log_path_obj.suffix}"
         )
-        assert process.stdout is not None
-        for line in process.stdout:
-            print(line, end="")
-            log_file.write(line)
-        return process.wait()
+        attempt_start = time.time()
+        with open(attempt_log_path, "w", encoding="utf-8") as log_file:
+            process = subprocess.Popen(
+                cmd,
+                cwd=cwd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+            )
+            assert process.stdout is not None
+
+            usage_limit_wait = None
+            for line in process.stdout:
+                print(line, end="")
+                log_file.write(line)
+                if "usage_limit_reached" in line or "Too Many Requests" in line:
+                    # Try to parse resets_in_seconds from JSON in the line
+                    try:
+                        json_start = line.find("{")
+                        if json_start != -1:
+                            payload = json.loads(line[json_start:])
+                            resets = payload.get("error", {}).get("resets_in_seconds")
+                            if isinstance(resets, int):
+                                usage_limit_wait = resets
+                    except Exception:
+                        usage_limit_wait = usage_limit_wait
+
+            exit_code = process.wait()
+
+        attempt_duration = time.time() - attempt_start
+
+        if usage_limit_wait is None:
+            if attempt_log_path != log_path_obj:
+                os.replace(attempt_log_path, log_path_obj)
+            return exit_code, attempt_duration
+
+        # Usage limit hit: sleep and retry
+        sleep_for = usage_limit_wait + 5
+        time.sleep(sleep_for)
 
 _metrics_lock = threading.Lock()
 _RUN_MARKER_PREFIX = "[Run-ID] CODEXUP_RUN_ID="
@@ -185,12 +221,26 @@ def parse_token_usage_from_session(session_path: Path) -> Dict[str, Optional[int
             "total_tokens": None,
         }
 
+    raw_input = last_total.get("input_tokens")
+    cached = last_total.get("cached_input_tokens")
+    if isinstance(raw_input, int) and isinstance(cached, int) and cached <= raw_input:
+        input_tokens = raw_input - cached
+    else:
+        input_tokens = raw_input
+
+    output_tokens = last_total.get("output_tokens")
+    reasoning_tokens = last_total.get("reasoning_output_tokens")
+
+    total_tokens = last_total.get("total_tokens")
+    if all(isinstance(v, int) for v in [input_tokens, cached, output_tokens, reasoning_tokens]):
+        total_tokens = input_tokens + cached + output_tokens + reasoning_tokens
+
     return {
-        "input_tokens": last_total.get("input_tokens"),
-        "cached_tokens": last_total.get("cached_input_tokens"),
-        "output_tokens": last_total.get("output_tokens"),
-        "reasoning_tokens": last_total.get("reasoning_output_tokens"),
-        "total_tokens": last_total.get("total_tokens"),
+        "input_tokens": input_tokens,
+        "cached_tokens": cached,
+        "output_tokens": output_tokens,
+        "reasoning_tokens": reasoning_tokens,
+        "total_tokens": total_tokens,
     }
 
 
@@ -304,58 +354,6 @@ def write_metrics(metrics_path: str, data: Dict[str, Any]) -> None:
             f.write(json.dumps(data) + "\n")
 
 
-def summarize_metrics(metrics: list[Dict[str, Any]]) -> Dict[str, Any]:
-    if not metrics:
-        return {}
-
-    total = len(metrics)
-    compile_success = sum(1 for m in metrics if m.get("compile_success"))
-    coverage_over_90 = sum(
-        1 for m in metrics
-        if (m.get("coverage", {}).get("overall", {}).get("percentage") or 0) >= 0.9
-    )
-    zero_errors = sum(1 for m in metrics if m.get("verification", {}).get("error_count") == 0)
-    avg_time = sum(m.get("duration_sec", 0) for m in metrics) / total
-
-    token_totals = {
-        "input_tokens": 0,
-        "output_tokens": 0,
-        "cached_tokens": 0,
-        "reasoning_tokens": 0,
-        "total_tokens": 0,
-    }
-    for m in metrics:
-        tokens = m.get("tokens") or {}
-        for k in token_totals:
-            v = tokens.get(k)
-            if isinstance(v, int):
-                token_totals[k] += v
-
-    cost_totals = {
-        "input_cost": 0.0,
-        "output_cost": 0.0,
-        "cached_cost": 0.0,
-        "reasoning_cost": 0.0,
-        "total_cost": 0.0,
-    }
-    any_cost = False
-    for m in metrics:
-        costs = m.get("costs") or {}
-        for k in cost_totals:
-            v = costs.get(k)
-            if isinstance(v, (int, float)):
-                cost_totals[k] += float(v)
-                any_cost = True
-
-    return {
-        "targets_total": total,
-        "compile_success_rate": compile_success / total,
-        "coverage_over_90_rate": coverage_over_90 / total,
-        "zero_final_errors_rate": zero_errors / total,
-        "avg_generation_time_sec": avg_time,
-        "token_totals": token_totals,
-        "cost_totals": cost_totals if any_cost else None,
-    }
 
 
 def _run_target(
@@ -380,8 +378,50 @@ def _run_target(
 
     target_file = os.path.join(project_root, file_path)
     proof_dir = os.path.join(project_root, proof_root, function)
-    makefile_include = os.path.join(project_root, makefile_include_dir, "Makefile.include")
+    makefile_include = os.path.join(makefile_include_dir, "Makefile.include")
     log_dir = os.path.join(project_root, proof_root, "logs")
+    os.makedirs(proof_dir, exist_ok=True)
+
+    # Checks if target file exists.
+    preflight_error = None
+    if not os.path.exists(target_file):
+        preflight_error = f"Target file does not exist: {target_file}"
+
+    if preflight_error:
+        error_path = os.path.join(proof_dir, "preflight_error.txt")
+        with open(error_path, "w", encoding="utf-8") as f:
+            f.write(preflight_error + "\n")
+
+        metrics = {
+            "function": function,
+            "proof_dir": proof_dir,
+            "log_path": None,
+            "run_id": None,
+            "session_path": None,
+            "success": False,
+            "exit_code": 1,
+            "duration_sec": 0.0,
+            "compile_success": False,
+            "tokens": {
+                "input_tokens": None,
+                "cached_tokens": None,
+                "output_tokens": None,
+                "reasoning_tokens": None,
+                "total_tokens": None,
+            },
+            "costs": estimate_cost({
+                "input_tokens": None,
+                "cached_tokens": None,
+                "output_tokens": None,
+                "reasoning_tokens": None,
+                "total_tokens": None,
+            }, pricing),
+            "coverage": read_coverage_metrics(proof_dir),
+            "verification": read_verification_results(proof_dir),
+            "preflight_error": preflight_error,
+        }
+        write_metrics(metrics_path, metrics)
+        return metrics
 
     ctx = {
         "FUNCTION_NAME": function,
@@ -396,11 +436,9 @@ def _run_target(
     run_id = uuid.uuid4().hex
     prompt = inject_run_marker(prompt, run_id)
 
-    os.makedirs(proof_dir, exist_ok=True)
     log_path = os.path.join(log_dir, f"codex_{function}.log")
 
-    start = time.time()
-    exit_code = run_codex(
+    exit_code, duration_sec = run_codex(
         prompt,
         log_path,
         dry_run,
@@ -408,7 +446,6 @@ def _run_target(
         model=model,
         extra_args=extra_args,
     )
-    duration_sec = time.time() - start
 
     session_path = find_session_file_by_marker(run_id)
     tokens = parse_token_usage_from_session(session_path) if session_path else {

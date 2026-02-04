@@ -1,0 +1,21 @@
+{
+  "targets_total": 5,
+  "compile_success_rate": 0.8,
+  "coverage_over_90_rate": 0.8,
+  "zero_final_errors_rate": 0.6,
+  "avg_generation_time_sec": 1824.8652284622192,
+  "token_totals": {
+    "input_tokens": 1132313,
+    "output_tokens": 196513,
+    "cached_tokens": 38135808,
+    "reasoning_tokens": 100928,
+    "total_tokens": 39565562
+  },
+  "cost_totals": {
+    "input_cost": 1.98154775,
+    "output_cost": 2.751182,
+    "cached_cost": 6.6737664,
+    "reasoning_cost": 0.0,
+    "total_cost": 11.406496149999999
+  }
+}

@@ -1,0 +1,28 @@
+project_root: /home/dananday/Research/RIOT
+
+# relative to project_root 
+proof_root: cbmc/CodexUP_RIOT_BaseIdeology
+
+# where Makefile.include is found (Provide absolute path)
+makefile_include_dir: /home/dananday/Research/CodexUP/templates
+
+# Examples are optional, controlled by a flag (Provide absolute path)
+examples_dir: /home/dananday/Research/CodexUP/templates/examples
+
+# relative to project_root
+targets:
+  - function: gnrc_rpl_recv_DAO
+    file_path: sys/net/gnrc/routing/rpl/gnrc_rpl_control_messages.c
+
+  - function: _gcoap_forward_proxy_copy_options
+    file_path: sys/net/application_layer/gcoap/forward_proxy.c
+
+  - function: gnrc_sixlowpan_iphc_recv
+    file_path: sys/net/gnrc/network_layer/sixlowpan/iphc/gnrc_sixlowpan_iphc.c
+
+  - function: base64_encode_base
+    file_path: sys/base64/base64.c
+
+  - function: gnrc_rpl_srh_process
+    file_path: sys/net/gnrc/routing/rpl/srh/gnrc_rpl_srh.c
+
