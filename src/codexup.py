@@ -261,21 +261,28 @@ def read_coverage_metrics(proof_dir: str) -> Dict[str, Any]:
     coverage = viewer.get("coverage", {})
     non_harness_hit = 0
     non_harness_total = 0
+    harness_hit = 0
+    harness_total = 0
     if isinstance(coverage, dict):
         for file_path, funcs in coverage.items():
-            if str(file_path).endswith("_harness.c"):
-                continue
+            is_harness = str(file_path).endswith("_harness.c")
             if not isinstance(funcs, dict):
                 continue
             for _func, lines in funcs.items():
                 if not isinstance(lines, dict):
                     continue
                 for _line, status in lines.items():
-                    non_harness_total += 1
-                    if str(status).lower() in {"hit", "covered", "1", "true"}:
-                        non_harness_hit += 1
+                    if is_harness:
+                        harness_total += 1
+                        if str(status).lower() in {"hit", "covered", "both", "1", "true"}:
+                            harness_hit += 1
+                    else:
+                        non_harness_total += 1
+                        if str(status).lower() in {"hit", "covered", "both", "1", "true"}:
+                            non_harness_hit += 1
 
     non_harness_pct = (non_harness_hit / non_harness_total) if non_harness_total else None
+    harness_pct = (harness_hit / harness_total) if harness_total else None
 
     return {
         "coverage_path": coverage_path,
@@ -283,6 +290,11 @@ def read_coverage_metrics(proof_dir: str) -> Dict[str, Any]:
             "hit": overall.get("hit"),
             "total": overall.get("total"),
             "percentage": overall.get("percentage"),
+        },
+        "harness": {
+            "hit": harness_hit,
+            "total": harness_total,
+            "percentage": harness_pct,
         },
         "non_harness": {
             "hit": non_harness_hit,

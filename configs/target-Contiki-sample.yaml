@@ -1,7 +1,7 @@
 project_root: /home/dananday/Research/contiki-ng
 
 # relative to project_root 
-proof_root: cbmc/CodexUP_Contiki_BaseIdeology
+proof_root: cbmc/CodexUP_Contiki_BaseIdeology_2
 
 # where Makefile.include is found (Provide absolute path)
 makefile_include_dir: /home/dananday/Research/CodexUP/templates
@@ -11,6 +11,21 @@ examples_dir: /home/dananday/Research/CodexUP/templates/examples
 
 # relative to project_root
 targets:
+  - function: uncompress_addr
+    file_path: os/net/ipv6/sicslowpan.c
+
+  - function: input
+    file_path: os/net/ipv6/sicslowpan.c
+
+  - function: dio_input
+    file_path: os/net/routing/rpl-classic/rpl-icmp6.c
+
+  - function: uncompress_hdr_iphc
+    file_path: os/net/ipv6/sicslowpan.c
+
+  - function: rpl_ext_header_srh_update
+    file_path: os/net/routing/rpl-classic/rpl-ext-header.c
+
   - function: read_frame
     file_path: arch/cpu/nrf/net/nrf-ieee-driver-arch.c
 

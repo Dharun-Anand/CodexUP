@@ -1,0 +1,11 @@
+function,compile_success,duration_sec,num_preconditions,stubs,tokens.total_tokens,costs.total_cost,coverage.overall.hit,coverage.overall.total,coverage.non_harness.hit,coverage.non_harness.total,harness_size,verification.error_count
+_gcoap_forward_proxy_copy_options,True,333.9695665836334,13,4,1258088,0.4479818,142,145,53,54,43,2
+gnrc_sixlowpan_iphc_recv,True,2732.198760986328,3,7,6924908,1.8668226499999998,186,418,132,352,15,0
+gnrc_rpl_recv_DAO,True,3343.243588924408,5,5,5956079,1.8850769,249,267,238,256,11,0
+base64_encode_base,True,606.8727970123291,9,0,2080173,0.9328861499999999,86,90,55,59,31,7
+gnrc_rpl_srh_process,True,984.0767545700073,4,1,4164185,1.4025759999999998,85,85,63,63,13,0
+_on_rd_init,True,247.35130095481873,5,2,1921052,0.77347375,52,52,21,21,19,2
+_receive,True,369.5575933456421,9,11,1556160,0.5932206,225,226,108,108,41,0
+clif_decode_link,True,1318.9365439414978,6,1,4506259,1.6162209,114,118,90,92,16,5
+uri_parser_process,True,1569.7694640159607,7,2,3405087,1.1560808,202,210,130,138,47,0
+_iphc_encode,True,3707.566329240799,23,9,15425400,4.4983372,227,368,135,270,37,0

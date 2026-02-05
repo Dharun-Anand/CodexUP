@@ -1,7 +1,7 @@
 project_root: /home/dananday/Research/zephyr
 
 # relative to project_root 
-proof_root: cbmc/CodexUP_Zephyr_BaseIdeology
+proof_root: cbmc/CodexUP_Zephyr_BaseIdeology_2
 
 # where Makefile.include is found (Provide absolute path)
 makefile_include_dir: /home/dananday/Research/CodexUP/templates
@@ -11,6 +11,21 @@ examples_dir: /home/dananday/Research/CodexUP/templates/examples
 
 # relative to project_root
 targets:
+  - function: imx_mu_ipm_send
+    file_path: drivers/ipm/ipm_imx.c
+
+  - function: nrf5_tx
+    file_path: drivers/ieee802154/ieee802154_nrf5.c
+
+  - function: send_sf
+    file_path: subsys/canbus/isotp/isotp.c
+
+  - function: queue_encapsulated_cmd
+    file_path: subsys/usb/device/class/netusb/function_rndis.c
+
+  - function: l2cap_chan_le_recv
+    file_path: subsys/bluetooth/host/l2cap.c
+
   - function: cmd_write
     file_path: subsys/settings/src/settings_shell.c
 

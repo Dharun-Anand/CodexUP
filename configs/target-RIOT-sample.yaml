@@ -1,7 +1,7 @@
 project_root: /home/dananday/Research/RIOT
 
 # relative to project_root 
-proof_root: cbmc/CodexUP_RIOT_BaseIdeology
+proof_root: cbmc/CodexUP_RIOT_BaseIdeology_2
 
 # where Makefile.include is found (Provide absolute path)
 makefile_include_dir: /home/dananday/Research/CodexUP/templates
@@ -11,6 +11,21 @@ examples_dir: /home/dananday/Research/CodexUP/templates/examples
 
 # relative to project_root
 targets:
+  - function: clif_decode_link
+    file_path: sys/clif/clif.c
+
+  - function: uri_parser_process
+    file_path: sys/uri_parser/uri_parser.c
+
+  - function: _iphc_encode
+    file_path: sys/net/gnrc/network_layer/sixlowpan/iphc/gnrc_sixlowpan_iphc.c
+
+  - function: _on_rd_init
+    file_path: sys/net/application_layer/cord/lc/cord_lc.c
+
+  - function: _receive
+    file_path: sys/net/gnrc/transport_layer/tcp/gnrc_tcp_eventloop.c
+
   - function: gnrc_rpl_recv_DAO
     file_path: sys/net/gnrc/routing/rpl/gnrc_rpl_control_messages.c
 
