@@ -1,9 +1,1 @@
 /home/dananday/Research/RIOT/cbmc/CodexUP_RIOT_AllPrompt/logs/codex_metrics.jsonl
-/home/dananday/Research/RIOT/cbmc/CodexUP_RIOT_BaseIdeology/logs/codex_metrics.jsonl
-/home/dananday/Research/RIOT/cbmc/CodexUP_RIOT_BasePrompt/logs/codex_metrics.jsonl
-/home/dananday/Research/zephyr/cbmc/CodexUP_Zephyr_AllPrompt/logs/codex_metrics.jsonl
-/home/dananday/Research/zephyr/cbmc/CodexUP_Zephyr_BaseIdeology/logs/codex_metrics.jsonl
-/home/dananday/Research/zephyr/cbmc/CodexUP_Zephyr_BasePrompt/logs/codex_metrics.jsonl
-/home/dananday/Research/contiki-ng/cbmc/CodexUP_Contiki_AllPrompt/logs/codex_metrics.jsonl
-/home/dananday/Research/contiki-ng/cbmc/CodexUP_Contiki_BaseIdeology/logs/codex_metrics.jsonl
-/home/dananday/Research/contiki-ng/cbmc/CodexUP_Contiki_BasePrompt/logs/codex_metrics.jsonl

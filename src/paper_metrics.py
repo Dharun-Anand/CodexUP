@@ -135,6 +135,37 @@ def _count_harness_stub_functions_ctags(proof_dir: Path) -> Optional[int]:
     return total
 
 
+def _parse_loop_limits(proof_dir: Path) -> Dict[str, Optional[int]]:
+    makefile = proof_dir / "Makefile"
+    try:
+        text = makefile.read_text(encoding="utf-8", errors="ignore")
+    except Exception:
+        return {"custom_loop_limits": None, "max_loop_limit": None}
+
+    unwindset_limits = []
+    for match in re.finditer(r"--unwindset\s+[^\s]+:(\d+)", text):
+        try:
+            unwindset_limits.append(int(match.group(1)))
+        except Exception:
+            continue
+
+    unwind_limits = []
+    for match in re.finditer(r"--unwind\s+(\d+)", text):
+        try:
+            unwind_limits.append(int(match.group(1)))
+        except Exception:
+            continue
+
+    max_limit = None
+    if unwindset_limits or unwind_limits:
+        max_limit = max(unwindset_limits + unwind_limits)
+
+    return {
+        "custom_loop_limits": len(unwindset_limits),
+        "max_loop_limit": max_limit,
+    }
+
+
 def iter_metrics(path: Path) -> Iterable[Dict[str, Any]]:
     with path.open("r", encoding="utf-8") as f:
         for line in f:
@@ -172,6 +203,8 @@ def build_paper_row(metrics: Dict[str, Any], run_root: Optional[Path] = None) ->
 
     num_preconditions = None
     stubs = None
+    custom_loop_limits = None
+    max_loop_limit = None
     if effective_proof_dir:
         scope = _gather_scope_files(Path(effective_proof_dir))
         scope_c = [p for p in scope if p.suffix.lower() == ".c"]
@@ -182,6 +215,11 @@ def build_paper_row(metrics: Dict[str, Any], run_root: Optional[Path] = None) ->
 
     if stubs is None and effective_proof_dir:
         stubs = _count_harness_stub_functions_ctags(Path(effective_proof_dir))
+
+    if effective_proof_dir:
+        loop_limits = _parse_loop_limits(Path(effective_proof_dir))
+        custom_loop_limits = loop_limits.get("custom_loop_limits")
+        max_loop_limit = loop_limits.get("max_loop_limit")
 
     row = OrderedDict()
     row["function"] = function
@@ -195,6 +233,8 @@ def build_paper_row(metrics: Dict[str, Any], run_root: Optional[Path] = None) ->
     row["compile_success"] = metrics.get("compile_success")
     row["num_preconditions"] = num_preconditions
     row["stubs"] = stubs
+    row["custom_loop_limits"] = custom_loop_limits
+    row["max_loop_limit"] = max_loop_limit
     row["tokens.input_tokens"] = _get_nested(metrics, "tokens", "input_tokens")
     row["tokens.cached_tokens"] = _get_nested(metrics, "tokens", "cached_tokens")
     row["tokens.output_tokens"] = _get_nested(metrics, "tokens", "output_tokens")
@@ -289,6 +329,8 @@ def main() -> None:
             "duration_sec",
             "num_preconditions",
             "stubs",
+            "custom_loop_limits",
+            "max_loop_limit",
             "tokens.total_tokens",
             "costs.total_cost",
             "coverage.overall.hit",
