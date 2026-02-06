@@ -1,0 +1,11 @@
+function,compile_success,harness_size,program_files,coverage.non_harness.hit,coverage.non_harness.total,custom_loop_limits,max_loop_limit,num_preconditions,stubs,verification.error_count
+bt_buf_get_tx,True,59,2,25,30,0,2,2,4,0
+cmd_write,True,33,1,33,34,0,40,6,4,1
+eswifi_mgmt_iface_status,True,93,1,92,107,0,40,11,45,1
+gatt_find_info_rsp,True,36,10,35,1018,0,1,6,5,0
+imx_mu_ipm_send,True,33,2,30,30,0,5,2,0,2
+l2cap_chan_le_recv,True,79,7,36,777,0,1,6,6,0
+nrf5_tx,True,116,0,0,0,0,2,13,38,0
+queue_encapsulated_cmd,True,43,3,24,24,0,1,3,2,2
+send_sf,True,41,1,45,45,0,2,2,3,0
+usb_dc_ep_write,True,37,1,37,41,0,2,4,2,1

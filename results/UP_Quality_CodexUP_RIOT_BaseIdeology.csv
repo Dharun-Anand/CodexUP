@@ -1,0 +1,11 @@
+function,compile_success,harness_size,program_files,coverage.non_harness.hit,coverage.non_harness.total,custom_loop_limits,max_loop_limit,num_preconditions,stubs,verification.error_count
+_gcoap_forward_proxy_copy_options,True,89,1,53,54,0,2,19,4,0
+_iphc_encode,True,59,6,102,286,0,17,1,9,0
+_on_rd_init,True,28,1,21,21,0,1,5,2,2
+_receive,True,101,6,102,104,0,4,9,16,0
+base64_encode_base,True,24,2,57,59,0,10,5,0,13
+clif_decode_link,True,25,1,90,92,0,8,4,1,30
+gnrc_rpl_recv_DAO,True,32,8,33,256,0,2,6,3,0
+gnrc_rpl_srh_process,True,22,2,63,63,0,4,4,1,4
+gnrc_sixlowpan_iphc_recv,True,71,8,120,352,0,1,4,6,0
+uri_parser_process,True,11,2,66,149,0,5,3,0,5

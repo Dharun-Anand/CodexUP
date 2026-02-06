@@ -1,1 +1,9 @@
 /home/dananday/Research/RIOT/cbmc/CodexUP_RIOT_AllPrompt
+/home/dananday/Research/RIOT/cbmc/CodexUP_RIOT_BaseIdeology
+/home/dananday/Research/RIOT/cbmc/CodexUP_RIOT_BasePrompt
+/home/dananday/Research/zephyr/cbmc/CodexUP_Zephyr_AllPrompt
+/home/dananday/Research/zephyr/cbmc/CodexUP_Zephyr_BaseIdeology
+/home/dananday/Research/zephyr/cbmc/CodexUP_Zephyr_BasePrompt
+/home/dananday/Research/contiki-ng/cbmc/CodexUP_Contiki_AllPrompt
+/home/dananday/Research/contiki-ng/cbmc/CodexUP_Contiki_BaseIdeology
+/home/dananday/Research/contiki-ng/cbmc/CodexUP_Contiki_BasePrompt
