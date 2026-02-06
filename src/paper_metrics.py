@@ -91,11 +91,29 @@ def _count_harness_size(coverage_path: Path) -> Optional[int]:
             continue
         if not isinstance(funcs, dict):
             continue
-        harness_lines = funcs.get("harness")
-        if not isinstance(harness_lines, dict):
-            continue
-        total += len(harness_lines)
+        for _func, lines in funcs.items():
+            if not isinstance(lines, dict):
+                continue
+            total += len(lines)
     return total
+
+
+def _count_program_files(coverage_path: Path) -> Optional[int]:
+    data = _read_json(coverage_path)
+    if not isinstance(data, dict):
+        return None
+
+    viewer = data.get("viewer-coverage", {})
+    coverage = viewer.get("coverage", {})
+    if not isinstance(coverage, dict):
+        return None
+
+    count = 0
+    for file_path in coverage.keys():
+        if str(file_path).endswith("_harness.c"):
+            continue
+        count += 1
+    return count
 
 
 def _count_harness_stub_functions_ctags(proof_dir: Path) -> Optional[int]:
@@ -198,8 +216,10 @@ def build_paper_row(metrics: Dict[str, Any], run_root: Optional[Path] = None) ->
         coverage_path = str(_coverage_path_from_proof_dir(effective_proof_dir))
 
     harness_size = None
+    program_files = None
     if coverage_path:
         harness_size = _count_harness_size(Path(coverage_path))
+        program_files = _count_program_files(Path(coverage_path))
 
     num_preconditions = None
     stubs = None
@@ -253,6 +273,7 @@ def build_paper_row(metrics: Dict[str, Any], run_root: Optional[Path] = None) ->
     row["coverage.non_harness.total"] = _get_nested(metrics, "coverage", "non_harness", "total")
     row["coverage.non_harness.percentage"] = _get_nested(metrics, "coverage", "non_harness", "percentage")
     row["harness_size"] = harness_size
+    row["program_files"] = program_files
     row["verification.result_path"] = _get_nested(metrics, "verification", "result_path")
     row["verification.error_count"] = _get_nested(metrics, "verification", "error_count")
     return row
@@ -338,6 +359,7 @@ def main() -> None:
             "coverage.non_harness.hit",
             "coverage.non_harness.total",
             "harness_size",
+            "program_files",
             "verification.error_count",
         ]
 
